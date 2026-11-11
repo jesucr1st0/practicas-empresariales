@@ -1,0 +1,33 @@
+@startuml eac01-cambio-horas-minimas
+title ESC-07 · EAC-01 Cambio de horas mínimas de 480 a 540 con prácticas en curso (ADR-001, ADR-009)
+skinparam shadowing false
+skinparam sequenceMessageAlign left
+skinparam participant {
+  BackgroundColor #EDF2F7
+  BorderColor #0B3C6B
+}
+autonumber
+actor "Desarrollador" as dev
+participant "Aplicación de prácticas" as app
+participant "Módulo Reglas" as reglas
+participant "Módulo Prácticas" as pract
+participant "Base de datos relacional" as bd
+actor "Coordinador de prácticas" as coord
+
+dev -> reglas : agrega la versión 2 (horas mínimas 540, vigencia desde el nuevo periodo)
+note right of reglas : cambio confinado a un solo módulo;\nrevisión en Pull Request y pruebas de regresión al 100 %
+dev -> app : redespliega el único artefacto (servicio detenido ≤ 5 min)
+reglas -> bd : inserta la nueva versión; no sobrescribe la anterior (SQL)
+
+== Después del despliegue, con prácticas en curso en producción ==
+coord -> pract : consulta las horas mínimas de una práctica
+pract -> reglas : resolver la versión aplicada a la práctica
+alt [la práctica se registró antes de la vigencia de la versión 2]
+  reglas -> bd : lee la versión 1 referenciada por la práctica (SQL)
+  reglas --> pract : 480 horas mínimas (0 prácticas en curso alteradas)
+else [la práctica se registra desde la vigencia de la versión 2]
+  reglas -> bd : lee la versión 2 (SQL)
+  reglas --> pract : 540 horas mínimas
+end
+pract --> coord : horas mínimas aplicables
+@enduml

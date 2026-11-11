@@ -1,0 +1,44 @@
+@startuml cu05-evaluar-estudiante
+title ESC-05 · CU-05 Evaluar al estudiante (evaluación de la empresa por enlace de un solo uso, EAC-02, ADR-006, ADR-013)
+skinparam shadowing false
+skinparam sequenceMessageAlign left
+skinparam participant {
+  BackgroundColor #EDF2F7
+  BorderColor #0B3C6B
+}
+autonumber
+actor "Supervisor de empresa" as sup
+participant "Planificador de tareas" as plan
+participant "Módulo Notificaciones" as notif
+participant "Servidor de correo institucional" as correo
+participant "Formulario de acceso externo" as ext
+participant "Módulo Identidad y accesos" as ident
+participant "Módulo Evaluaciones" as eval
+participant "Módulo Prácticas" as pract
+participant "Base de datos relacional" as bd
+
+loop [evaluación pendiente y enlace vigente (riesgo RI-03)]
+  plan -> notif : enviar recordatorio a la empresa
+  notif -> correo : envía el recordatorio con el enlace (SMTP)
+  notif -> bd : registra el envío, incluido el fallido (SQL)
+  correo --> sup : recordatorio
+end
+
+sup -> ext : abre el enlace y envía la evaluación (HTTPS, 4G)
+ext -> ident : validar enlace y acción permitida "evaluar"
+ident -> bd : busca el hash y registra el acceso en la bitácora (SQL)
+
+alt [enlace vigente y evaluación aún no enviada]
+  ident --> ext : acceso concedido con alcance mínimo
+  ext -> eval : registrar evaluación
+  eval -> bd : guarda la evaluación de la práctica (SQL)
+  eval -> pract : marca la evaluación como recibida
+  pract -> bd : actualiza el estado de la práctica (SQL)
+  eval -> ident : invalidar el enlace tras el primer envío
+  ident -> bd : cambia el estado del enlace a "usado" (SQL)
+  ext --> sup : confirmación sin crear cuenta
+else [enlace vencido o ya usado]
+  ident --> ext : acceso denegado
+  ext --> sup : "enlace no disponible; pida al coordinador que lo reemita"
+end
+@enduml

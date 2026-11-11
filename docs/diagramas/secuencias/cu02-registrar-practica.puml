@@ -1,0 +1,35 @@
+@startuml cu02-registrar-practica
+title ESC-02 · CU-02 Registrar práctica (la práctica fija la versión de regla vigente, EAC-01)
+skinparam shadowing false
+skinparam sequenceMessageAlign left
+skinparam participant {
+  BackgroundColor #EDF2F7
+  BorderColor #0B3C6B
+}
+autonumber
+actor "Coordinador de prácticas" as coord
+participant "Interfaz web interna" as web
+participant "Módulo Prácticas" as pract
+participant "Módulo Postulaciones" as post
+participant "Módulo Reglas" as reglas
+participant "Base de datos relacional" as bd
+
+coord -> web : registra la práctica (programa, empresa, supervisor, fechas) (HTTPS)
+web -> pract : registrar práctica
+opt [la práctica proviene de una postulación]
+  pract -> post : confirma que la postulación está verificada
+  post -> bd : lee el estado de la postulación (SQL)
+  post --> pract : postulación verificada
+end
+pract -> reglas : resolver versión vigente (programa, fecha de registro)
+reglas -> bd : lee la versión de regla con vigencia a esa fecha (SQL)
+reglas --> pract : versión vigente (por ejemplo v2, 540 horas mínimas)
+break [no existe versión vigente para el programa]
+  pract --> web : error de configuración de reglas
+  web --> coord : no se puede registrar la práctica
+end
+pract -> bd : guarda la práctica con referencia a esa versión de regla (SQL)
+note right of bd : la referencia no cambia después;\nlas versiones posteriores no alteran esta práctica
+pract --> web : práctica registrada
+web --> coord : confirmación
+@enduml

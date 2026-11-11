@@ -1,0 +1,27 @@
+@startuml contexto
+!include <C4/C4_Context>
+LAYOUT_WITH_LEGEND()
+title Contexto del sistema: Sistema de Gestión de Prácticas Empresariales (C4 nivel 1)
+
+Person(estudiante, "Estudiante", "Se postula, consulta el estado de su práctica y registra horas")
+Person(tutor, "Tutor académico", "Hace seguimiento y valida las horas de sus estudiantes asignados")
+Person(coordinador, "Coordinador de prácticas", "Registra prácticas, asigna tutores y genera el acta final")
+Person(administrador, "Administrador", "Gestiona usuarios, roles y datos maestros")
+Person_Ext(supervisor, "Supervisor de empresa", "Valida horas y evalúa al estudiante sin crear cuenta")
+
+System(sgpe, "Sistema de Gestión de Prácticas Empresariales", "Centraliza postulación, asignación de tutores, seguimiento de horas, evaluación de la empresa y acta final")
+
+System_Ext(sia, "SIA", "Sistema de Información Académica; fuente de los datos académicos de estudiantes y tutores")
+System_Ext(sso, "SSO institucional", "Inicio de sesión único de la Universidad para usuarios internos")
+System_Ext(correo, "Servidor de correo institucional", "Entrega correos a estudiantes, tutores y supervisores")
+
+Rel(estudiante, sgpe, "Postula, consulta el estado y registra horas", "HTTPS")
+Rel(tutor, sgpe, "Da seguimiento y valida horas", "HTTPS")
+Rel(coordinador, sgpe, "Registra prácticas, asigna tutores y genera actas", "HTTPS")
+Rel(administrador, sgpe, "Administra usuarios, roles y datos maestros", "HTTPS")
+Rel(supervisor, sgpe, "Valida horas y evalúa mediante enlace de un solo uso", "HTTPS, celular 4G")
+
+Rel(sgpe, sia, "Consulta datos académicos (nunca su base de datos)", "Servicios del SIA [protocolo por confirmar]")
+Rel(sgpe, sso, "Delega la autenticación de usuarios internos", "OIDC, SAML o CAS [por confirmar]")
+Rel(sgpe, correo, "Envía notificaciones, avisos y enlaces", "SMTP")
+@enduml

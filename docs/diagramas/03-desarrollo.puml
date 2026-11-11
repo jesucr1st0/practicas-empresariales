@@ -1,0 +1,129 @@
+' Vista de desarrollo: tres diagramas del mismo contenedor «Aplicación de prácticas».
+'  1) componentes (C4 nivel 3)   2) capas (Clean Architecture)   3) usos entre módulos (sin ciclos)
+
+@startuml desarrollo-componentes
+!include <C4/C4_Component>
+LAYOUT_WITH_LEGEND()
+title Vista de desarrollo (1 de 3): diagrama de componentes de la Aplicación de prácticas (C4 nivel 3)
+caption Todos los módulos persisten mediante puertos de repositorio que implementa el Adaptador de persistencia (flechas agrupadas por legibilidad).
+
+Container_Ext(navegador, "Navegadores de usuarios", "Usuarios internos y Supervisor de empresa", "Estudiante, Tutor académico, Coordinador de prácticas, Administrador y Supervisor de empresa")
+ContainerDb_Ext(bd, "Base de datos relacional", "PostgreSQL", "")
+ContainerDb_Ext(archivos, "Almacenamiento de archivos", "Almacenamiento institucional", "")
+System_Ext(sia, "SIA", "Sistema de Información Académica")
+System_Ext(sso, "SSO institucional", "Inicio de sesión único")
+System_Ext(correo, "Servidor de correo institucional", "Correo electrónico")
+
+Container_Boundary(app, "Aplicación de prácticas (monolito modular, ADR-001)") {
+
+  Component(web, "Interfaz web interna", "Adaptador de entrada", "Pantallas y controladores para usuarios con sesión SSO; aplica rol y alcance")
+  Component(ext, "Formulario de acceso externo", "Adaptador de entrada", "Formulario liviano para el Supervisor de empresa, accesible solo con enlace (ADR-006)")
+  Component(plan, "Planificador de tareas", "Adaptador de entrada programado", "Reintentos cada 15 min, recordatorios y alertas (ADR-008, ADR-013)")
+
+  Boundary(mods, "Módulos (dominio y casos de uso)") {
+    Component(mIdent, "Módulo Identidad y accesos", "Módulo", "Roles, permisos, enlaces de un solo uso y bitácora (ADR-005, ADR-006)")
+    Component(mReglas, "Módulo Reglas", "Módulo", "Versiones inmutables de reglas por programa (ADR-009)")
+    Component(mPost, "Módulo Postulaciones", "Módulo", "CU-03: guarda como pendiente, verifica y reintenta (ADR-008)")
+    Component(mPract, "Módulo Prácticas", "Módulo", "CU-02, CU-12: registra prácticas, estado y tablero")
+    Component(mTut, "Módulo Tutores y asignación", "Módulo", "CU-01, CU-09, CU-11: sugiere y confirma asignaciones (ADR-012)")
+    Component(mHoras, "Módulo Horas", "Módulo", "CU-04: registro y validación de horas")
+    Component(mEval, "Módulo Evaluaciones", "Módulo", "CU-05: evaluación del estudiante por la empresa")
+    Component(mActas, "Módulo Actas", "Módulo", "CU-06, CU-07: acta final inmutable (ADR-010)")
+    Component(mNotif, "Módulo Notificaciones", "Módulo", "Avisos, recordatorios y registro de envíos (ADR-013)")
+  }
+
+  Component(aSia, "Adaptador SIA", "Adaptador de salida", "Implementa el puerto ConsultaAcademica; único punto de acceso al SIA (ADR-007)")
+  Component(aPers, "Adaptador de persistencia", "Adaptador de salida", "Implementa los puertos de repositorio")
+  Component(aArch, "Adaptador de archivos", "Adaptador de salida", "Implementa el puerto AlmacenArchivos")
+  Component(aSso, "Adaptador SSO", "Adaptador de salida", "Implementa el puerto ProveedorIdentidad")
+  Component(aCorreo, "Adaptador de correo", "Adaptador de salida", "Implementa el puerto EnvioCorreo")
+}
+
+Rel(navegador, web, "Usa la interfaz interna", "HTTPS")
+Rel(navegador, ext, "Abre el enlace de un solo uso", "HTTPS")
+Rel(web, mods, "Invoca casos de uso", "Llamada en proceso")
+Rel(ext, mods, "Invoca casos de uso", "Llamada en proceso")
+Rel(plan, mods, "Dispara tareas programadas", "Llamada en proceso")
+
+Rel(mIdent, aSso, "Valida la sesión mediante", "Puerto ProveedorIdentidad")
+Rel(mPost, aSia, "Verifica datos académicos mediante", "Puerto ConsultaAcademica")
+Rel(mPract, aSia, "Consulta datos del estudiante mediante", "Puerto ConsultaAcademica")
+Rel(mTut, aSia, "Consulta datos del tutor mediante", "Puerto ConsultaAcademica")
+Rel(mNotif, aCorreo, "Envía correos mediante", "Puerto EnvioCorreo")
+Rel(mActas, aArch, "Guarda y lee actas mediante", "Puerto AlmacenArchivos")
+Rel(mods, aPers, "Persiste mediante", "Puertos de repositorio")
+
+Rel(aSso, sso, "Autentica", "OIDC, SAML o CAS [por confirmar]")
+Rel(aSia, sia, "Consulta datos académicos", "Servicios del SIA [por confirmar]")
+Rel(aCorreo, correo, "Entrega correos", "SMTP")
+Rel(aPers, bd, "Lee y escribe", "SQL")
+Rel(aArch, archivos, "Guarda y lee archivos", "Acceso a archivos [por confirmar]")
+@enduml
+
+@startuml desarrollo-capas
+title Vista de desarrollo (2 de 3): capas de la Aplicación de prácticas (la dependencia apunta hacia el dominio)
+skinparam shadowing false
+skinparam rectangle {
+  BackgroundColor #EDF2F7
+  BorderColor #0B3C6B
+  FontColor #0B3C6B
+}
+skinparam ArrowColor #555555
+skinparam defaultTextAlignment center
+
+rectangle "infraestructura\nAdaptadores de entrada: Interfaz web interna, Formulario de acceso externo, Planificador de tareas\nAdaptadores de salida: Adaptador SIA, Adaptador de persistencia, Adaptador de archivos,\nAdaptador SSO, Adaptador de correo" as infra
+rectangle "aplicacion\nCasos de uso de los módulos (Postulaciones, Prácticas, Tutores y asignación, Horas,\nEvaluaciones, Actas, Reglas, Identidad y accesos, Notificaciones) y puertos/\n(ConsultaAcademica, repositorios, AlmacenArchivos, ProveedorIdentidad, EnvioCorreo)" as app
+rectangle "dominio\nEntidades y reglas: Postulacion, Practica, ReglaPrograma, AsignacionTutor, RegistroHoras,\nEvaluacion, ActaFinal, EnlaceAcceso, RegistroAcceso" as dom
+rectangle "composición (arranque)\nConecta capas y adaptadores; es lo único que las conoce todas" as comp #FFFFFF
+
+infra ..> app : usa casos de uso e implementa los puertos
+app ..> dom : usa las entidades
+comp ..> infra : instancia
+@enduml
+
+@startuml desarrollo-usos
+title Vista de desarrollo (3 de 3): vista de usos entre módulos (sin ciclos)
+skinparam shadowing false
+skinparam rectangle {
+  BackgroundColor #EDF2F7
+  BorderColor #0B3C6B
+  FontColor #0B3C6B
+}
+skinparam ArrowColor #555555
+left to right direction
+
+rectangle "Módulo Actas\nCU-06, CU-07" as actas
+rectangle "Módulo Horas\nCU-04" as horas
+rectangle "Módulo Evaluaciones\nCU-05" as eval
+rectangle "Módulo Tutores y asignación\nCU-01" as tut
+rectangle "Módulo Prácticas\nCU-02" as pract
+rectangle "Módulo Postulaciones\nCU-03" as post
+rectangle "Módulo Reglas" as reglas
+rectangle "Módulo Identidad y accesos" as ident
+rectangle "Módulo Notificaciones" as notif
+rectangle "Puerto ConsultaAcademica\n(Adaptador SIA)" as sia #FFFFFF
+rectangle "Puerto AlmacenArchivos" as arch #FFFFFF
+
+actas ..> pract : usa
+actas ..> horas : usa
+actas ..> eval : usa
+actas ..> reglas : usa
+actas ..> arch : usa
+horas ..> pract : usa
+horas ..> reglas : usa
+horas ..> ident : emite enlace
+horas ..> notif : envía enlace
+eval ..> pract : usa
+eval ..> ident : emite enlace
+eval ..> notif : avisa
+tut ..> pract : usa
+tut ..> reglas : capacidad
+tut ..> sia : datos del tutor
+pract ..> post : liga
+pract ..> reglas : fija versión
+pract ..> sia : datos del estudiante
+post ..> sia : verifica
+post ..> notif : avisa
+
+reglas -[#red,dashed]-> pract : ✗ prohibido: ciclo
+@enduml

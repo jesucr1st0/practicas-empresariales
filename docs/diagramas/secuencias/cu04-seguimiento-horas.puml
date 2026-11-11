@@ -1,0 +1,63 @@
+@startuml cu04-seguimiento-horas
+title ESC-04 · CU-04 Seguimiento de horas con validación del supervisor sin cuenta (EAC-02, ADR-005, ADR-006)
+skinparam shadowing false
+skinparam sequenceMessageAlign left
+skinparam participant {
+  BackgroundColor #EDF2F7
+  BorderColor #0B3C6B
+}
+autonumber
+actor "Estudiante" as est
+actor "Tutor académico" as tutor
+actor "Supervisor de empresa" as sup
+participant "Interfaz web interna" as web
+participant "Formulario de acceso externo" as ext
+participant "Módulo Horas" as horas
+participant "Módulo Identidad y accesos" as ident
+participant "Módulo Notificaciones" as notif
+participant "Servidor de correo institucional" as correo
+participant "Base de datos relacional" as bd
+
+== Registro de horas por el estudiante (usuario interno con SSO) ==
+est -> web : registra horas y evidencia (HTTPS)
+web -> horas : registrar horas
+horas -> bd : guarda el registro "pendiente de validación" (SQL)
+horas --> web : horas registradas
+web --> est : confirmación
+
+opt [seguimiento del tutor]
+  tutor -> web : consulta y valida horas de sus estudiantes
+  web -> horas : listar y validar horas (solo estudiantes asignados)
+  horas -> bd : lee y actualiza el estado de validación (SQL)
+  horas --> web : resultado
+end
+
+== Emisión del enlace al supervisor (supuesto: al solicitar la validación; por confirmar, RI-05) ==
+horas -> ident : emitir enlace (práctica, acciones: validar horas y evaluar, vence en 30 días)
+ident -> bd : guarda solo el hash del token aleatorio de 128 bits o más (SQL)
+ident --> horas : enlace
+horas -> notif : enviar el enlace al supervisor
+notif -> correo : envía el correo con el enlace (SMTP)
+notif -> bd : registra el envío, incluido el fallido (SQL)
+correo --> sup : correo con el enlace
+
+== Validación por el supervisor (celular 4G, sin contraseña) ==
+sup -> ext : abre el enlace (HTTPS, 4G)
+ext -> ident : validar enlace
+ident -> bd : busca el hash y registra el acceso en la bitácora: quién, qué, cuándo, IP y agente (SQL)
+note right of bd : 100 % de los accesos quedan registrados,\nincluso los rechazados
+alt [enlace vigente: no usado y con menos de 30 días]
+  ident --> ext : acceso concedido con alcance mínimo (una práctica)
+  ext -> horas : consultar horas de la práctica
+  horas -> bd : lee los registros de horas (SQL)
+  horas --> ext : horas pendientes
+  ext --> sup : formulario liviano (carga ≤ 3 s p95)
+  sup -> ext : valida las horas
+  ext -> horas : validar horas por el supervisor
+  horas -> bd : marca las horas como "validadas" (SQL)
+  ext --> sup : confirmación (el 90 % termina en ≤ 5 min)
+else [enlace vencido, usado o revocado]
+  ident --> ext : acceso denegado
+  ext --> sup : "enlace no disponible; pida al coordinador que lo reemita"
+end
+@enduml

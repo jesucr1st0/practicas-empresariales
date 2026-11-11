@@ -1,0 +1,51 @@
+@startuml cu01-asignar-tutor
+title ESC-01 · CU-01 Asignar tutor (ADR-012: el sistema sugiere, el coordinador confirma)
+skinparam shadowing false
+skinparam sequenceMessageAlign left
+skinparam participant {
+  BackgroundColor #EDF2F7
+  BorderColor #0B3C6B
+}
+autonumber
+actor "Coordinador de prácticas" as coord
+participant "Interfaz web interna" as web
+participant "Módulo Identidad y accesos" as ident
+participant "SSO institucional" as sso
+participant "Módulo Tutores y asignación" as tut
+participant "Módulo Prácticas" as pract
+participant "Módulo Reglas" as reglas
+participant "Base de datos relacional" as bd
+
+coord -> web : abre la asignación de tutores (HTTPS)
+web -> ident : valida sesión y permiso
+ident -> sso : consulta la sesión (protocolo por confirmar)
+sso --> ident : usuario autenticado
+ident -> bd : lee el rol y registra el acceso en la bitácora (SQL)
+ident --> web : rol Coordinador autorizado
+
+web -> tut : sugerir asignación de la práctica
+tut -> pract : obtiene programa y versión de regla de la práctica
+tut -> reglas : consulta capacidad máxima por tutor de esa versión
+tut -> bd : lee la carga actual de cada tutor del programa (SQL)
+tut --> web : tutor sugerido (programa y carga actual)
+web --> coord : muestra la sugerencia
+
+alt [el coordinador confirma la sugerencia]
+  coord -> web : confirma
+else [el coordinador ajusta el tutor]
+  coord -> web : elige otro tutor
+  note right of web : la capacidad máxima se muestra como advertencia;\nla decisión final es del coordinador
+end
+
+web -> tut : confirmar asignación
+tut -> bd : registra la asignación vigente y conserva la anterior como historial (SQL)
+tut -> pract : actualiza el tutor vigente de la práctica
+pract -> bd : guarda el tutor vigente (SQL)
+tut --> web : asignación registrada
+web --> coord : confirmación
+
+note over pract, bd
+  Desde aquí el Tutor académico solo ve a los estudiantes
+  que tiene asignados (regla de alcance, ADR-005).
+end note
+@enduml
