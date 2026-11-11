@@ -1,0 +1,60 @@
+@startuml cu03-realizar-postulacion
+title ESC-03 · CU-03 Realizar postulación con el SIA lento o caído (EAC-03, ADR-007, ADR-008)
+skinparam shadowing false
+skinparam sequenceMessageAlign left
+skinparam participant {
+  BackgroundColor #EDF2F7
+  BorderColor #0B3C6B
+}
+autonumber
+actor "Estudiante" as est
+participant "Interfaz web interna" as web
+participant "Módulo Postulaciones" as post
+participant "Base de datos relacional" as bd
+participant "Adaptador SIA" as asia
+participant "SIA" as sia
+participant "Módulo Notificaciones" as notif
+participant "Servidor de correo institucional" as correo
+participant "Planificador de tareas" as plan
+actor "Coordinador de prácticas" as coord
+
+est -> web : envía la postulación (HTTPS)
+web -> post : registrar postulación
+post -> bd : guarda la postulación en estado "pendiente de verificación" (SQL)
+note right of bd : se guarda antes de consultar al SIA:\n0 postulaciones perdidas
+post -> asia : verificar datos académicos (espera máx. 10 s)
+asia -> sia : consulta por los servicios del SIA (nunca su base de datos)
+
+alt [el SIA responde en 10 s]
+  sia --> asia : datos académicos (≤ 5 s p95)
+  asia --> post : resultado de la verificación
+  post -> bd : actualiza el estado a "verificada" o "rechazada" (SQL)
+  post --> web : resultado inmediato
+  web --> est : muestra el resultado
+else [el SIA no responde en 10 s]
+  post --> web : postulación recibida, verificación pendiente
+  web --> est : muestra el estado "pendiente"
+  post -> notif : avisar al estudiante (en ≤ 1 min)
+  notif -> correo : envía el aviso (SMTP)
+  notif -> bd : registra el envío, incluido el fallido (SQL)
+end
+
+loop [cada 15 min durante 24 h, mientras la postulación siga pendiente]
+  plan -> post : reintentar verificación (operación idempotente)
+  post -> asia : verificar datos académicos (espera máx. 10 s)
+  asia -> sia : consulta por los servicios del SIA
+  break [el SIA responde]
+    sia --> asia : datos académicos
+    post -> bd : actualiza el estado a "verificada" o "rechazada" (SQL)
+    post -> notif : avisar el resultado al estudiante
+    notif -> correo : envía el aviso (SMTP)
+  end
+end
+
+opt [pasaron 24 h sin respuesta del SIA]
+  post -> bd : pasa a "revisión manual del coordinador"; nunca se descarta (SQL)
+  post -> notif : alerta de postulaciones pendientes por más de 24 h
+  notif -> correo : alerta al coordinador (SMTP)
+  correo --> coord : correo de alerta
+end
+@enduml

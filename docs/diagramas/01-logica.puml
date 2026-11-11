@@ -1,0 +1,109 @@
+@startuml logica
+title Vista lógica: modelo de dominio del Sistema de Gestión de Prácticas Empresariales
+hide circle
+hide methods
+skinparam classAttributeIconSize 0
+skinparam shadowing false
+skinparam class {
+  BackgroundColor #EDF2F7
+  BorderColor #0B3C6B
+  HeaderBackgroundColor #0B3C6B
+  FontColor #0B3C6B
+}
+
+class Programa {
+  nombre
+}
+class ReglaPrograma {
+  versión
+  vigencia desde
+  horas mínimas
+  capacidad máxima por tutor
+}
+class Estudiante {
+  documento
+  nombre
+}
+class Tutor {
+  documento
+  nombre
+}
+class Empresa {
+  NIT
+  razón social
+}
+class Supervisor {
+  nombre
+  correo
+}
+class Postulacion {
+  fecha
+  estado
+}
+class Practica {
+  periodo
+  fecha de inicio
+  fecha de fin
+  estado
+}
+class AsignacionTutor {
+  fecha
+  vigente
+  origen
+}
+class RegistroHoras {
+  fecha
+  cantidad
+  evidencia
+  estado de validación
+}
+class Evaluacion {
+  fecha
+  resultado
+  observaciones
+}
+class ActaFinal {
+  fecha de emisión
+  huella de integridad
+  estado
+}
+class EnlaceAcceso {
+  acciones permitidas
+  vencimiento
+  estado
+}
+class RegistroAcceso {
+  quién
+  qué
+  cuándo
+  desde dónde
+}
+
+Programa "1" -- "0..*" ReglaPrograma : define versiones de
+Programa "1" -- "0..*" Estudiante : agrupa
+Programa "0..*" -- "0..*" Tutor : es atendido por
+Estudiante "1" -- "0..*" Postulacion : presenta
+Postulacion "1" -- "0..1" Practica : origina
+Estudiante "1" -- "0..*" Practica : realiza
+Practica "0..*" -- "1" ReglaPrograma : se rige por
+Practica "0..*" -- "1" Empresa : se realiza en
+Practica "0..*" -- "1" Supervisor : es supervisada por
+Empresa "1" -- "1..*" Supervisor : cuenta con
+Practica "1" -- "0..*" AsignacionTutor : registra
+AsignacionTutor "0..*" -- "1" Tutor : asigna a
+Practica "1" -- "0..*" RegistroHoras : acumula
+Practica "1" -- "0..1" Evaluacion : recibe
+Practica "1" -- "0..*" ActaFinal : produce
+Practica "1" -- "0..*" EnlaceAcceso : habilita
+EnlaceAcceso "0..*" -- "1" Supervisor : se emite a
+EnlaceAcceso "1" -- "0..*" RegistroAcceso : deja
+
+note bottom of ActaFinal
+  A lo sumo una acta vigente por práctica;
+  una corrección anula la anterior.
+end note
+note bottom of AsignacionTutor
+  A lo sumo una asignación vigente por práctica;
+  el resto es historial.
+end note
+@enduml

@@ -1,0 +1,50 @@
+@startuml cu06-generar-acta
+title ESC-06 · CU-06 Generar acta final con plantilla oficial, inmutable y con huella (ADR-010, ADR-011, RN-03)
+skinparam shadowing false
+skinparam sequenceMessageAlign left
+skinparam participant {
+  BackgroundColor #EDF2F7
+  BorderColor #0B3C6B
+}
+autonumber
+actor "Coordinador de prácticas" as coord
+participant "Interfaz web interna" as web
+participant "Módulo Actas" as actas
+participant "Módulo Prácticas" as pract
+participant "Módulo Reglas" as reglas
+participant "Módulo Horas" as horas
+participant "Módulo Evaluaciones" as eval
+participant "Base de datos relacional" as bd
+participant "Almacenamiento de archivos" as arch
+
+coord -> web : genera el acta de una práctica finalizada (HTTPS)
+web -> actas : generar acta
+actas -> pract : obtiene la práctica y la versión de regla que aplicó al registrarse
+par [horas validadas]
+  actas -> horas : total de horas validadas
+  horas -> bd : suma las horas validadas (SQL)
+else [evaluación]
+  actas -> eval : evaluación de la empresa
+  eval -> bd : lee la evaluación (SQL)
+end
+actas -> reglas : horas mínimas de la versión aplicada a esa práctica
+break [horas validadas menores a las mínimas, o sin evaluación]
+  actas --> web : acta no generada, con el motivo
+  web --> coord : muestra el motivo
+end
+actas -> actas : genera el PDF con la plantilla oficial versionada y calcula la huella SHA-256
+actas -> arch : guarda el PDF como inmutable (sin borrado antes del plazo de retención)
+actas -> bd : registra metadatos, huella y datos de origen: versión de regla, horas y evaluación (SQL)
+opt [ya existía un acta vigente (corrección)]
+  actas -> bd : marca el acta anterior como "anulada"; nunca se edita (SQL)
+end
+actas --> web : acta emitida (dentro de 5 días hábiles, OB-05)
+web --> coord : confirmación
+
+opt [exportar el acta, CU-07]
+  coord -> web : descarga el acta
+  web -> actas : exportar acta
+  actas -> arch : lee el mismo PDF almacenado
+  actas --> web : PDF original
+end
+@enduml

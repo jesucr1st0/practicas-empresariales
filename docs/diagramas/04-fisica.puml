@@ -1,0 +1,38 @@
+@startuml fisica
+!include <C4/C4_Deployment>
+LAYOUT_WITH_LEGEND()
+title Vista física: diagrama de despliegue sobre la infraestructura institucional (RT-01)
+
+Deployment_Node(navInterno, "Equipo del usuario interno", "Navegador web") {
+  Container(navI, "Navegador de usuarios internos", "Navegador web", "Estudiante, Tutor académico, Coordinador de prácticas y Administrador")
+}
+Deployment_Node(celular, "Celular del supervisor", "Navegador móvil, conexión 4G") {
+  Container(navS, "Navegador del Supervisor de empresa", "Navegador móvil", "Abre el enlace de un solo uso")
+}
+
+Deployment_Node(dc, "Centro de datos de la Universidad (RT-01, ADR-003)", "Infraestructura institucional") {
+
+  Deployment_Node(nApp, "Servidor de aplicaciones", "Sistema operativo y entorno de ejecución del catálogo [por confirmar, RT-04]") {
+    Container(app, "Aplicación de prácticas", "Monolito modular", "Un solo artefacto de despliegue reproducible (ADR-001)")
+  }
+  Deployment_Node(nBd, "Servidor de base de datos", "Motor relacional del catálogo [PostgreSQL candidato]") {
+    ContainerDb(bd, "Base de datos relacional", "PostgreSQL", "Solo accesible desde la red interna")
+  }
+  Deployment_Node(nArch, "Almacenamiento de archivos institucional", "Almacenamiento del centro de datos") {
+    ContainerDb(archivos, "Almacenamiento de archivos", "Archivos", "Actas finales y evidencias")
+  }
+  Deployment_Node(nServ, "Servicios institucionales existentes", "Administrados por el Área de sistemas y el Administrador del SIA") {
+    System_Ext(sia, "SIA", "Sistema de Información Académica")
+    System_Ext(sso, "SSO institucional", "Inicio de sesión único")
+    System_Ext(correo, "Servidor de correo institucional", "Correo electrónico")
+  }
+}
+
+Rel(navI, app, "Usa la interfaz web interna", "HTTPS")
+Rel(navS, app, "Abre el enlace de un solo uso", "HTTPS (Internet, 4G)")
+Rel(app, bd, "Lee y escribe", "SQL (red interna)")
+Rel(app, archivos, "Guarda y lee actas y evidencias", "Acceso a archivos (red interna)")
+Rel(app, sia, "Consulta datos académicos", "Servicios del SIA [por confirmar]")
+Rel(app, sso, "Delega la autenticación", "OIDC, SAML o CAS [por confirmar]")
+Rel(app, correo, "Envía notificaciones y enlaces", "SMTP")
+@enduml

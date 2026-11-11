@@ -1,0 +1,33 @@
+@startuml procesos
+!include <C4/C4_Container>
+LAYOUT_WITH_LEGEND()
+title Vista de procesos: diagrama de contenedores (C4 nivel 2)
+
+Person(estudiante, "Estudiante", "")
+Person(tutor, "Tutor académico", "")
+Person(coordinador, "Coordinador de prácticas", "")
+Person(administrador, "Administrador", "")
+Person_Ext(supervisor, "Supervisor de empresa", "")
+
+System_Boundary(sgpe, "Sistema de Gestión de Prácticas Empresariales") {
+  Container(app, "Aplicación de prácticas", "Monolito modular; lenguaje y framework por confirmar (RT-04)", "Interfaz web, reglas del proceso, acceso por enlace y tareas programadas (reintentos y recordatorios) en un solo artefacto (ADR-001, ADR-008)")
+  ContainerDb(bd, "Base de datos relacional", "PostgreSQL (candidato, ADR-002)", "Prácticas, horas, evaluaciones, reglas versionadas, bitácora de accesos y verificaciones pendientes")
+  ContainerDb(archivos, "Almacenamiento de archivos", "Almacenamiento institucional (ADR-011)", "Actas finales en PDF y evidencias, con retención parametrizable")
+}
+
+System_Ext(sia, "SIA", "Sistema de Información Académica")
+System_Ext(sso, "SSO institucional", "Inicio de sesión único")
+System_Ext(correo, "Servidor de correo institucional", "Correo electrónico")
+
+Rel(estudiante, app, "Postula, consulta el estado y registra horas", "HTTPS")
+Rel(tutor, app, "Da seguimiento y valida horas", "HTTPS")
+Rel(coordinador, app, "Registra prácticas, asigna tutores y genera actas", "HTTPS")
+Rel(administrador, app, "Administra usuarios, roles y datos maestros", "HTTPS")
+Rel(supervisor, app, "Valida horas y evalúa mediante enlace de un solo uso", "HTTPS, celular 4G")
+
+Rel(app, bd, "Lee y escribe", "SQL")
+Rel(app, archivos, "Guarda y lee actas y evidencias", "Acceso a archivos [por confirmar]")
+Rel(app, sia, "Consulta datos académicos (espera máx. 10 s)", "Servicios del SIA [por confirmar]")
+Rel(app, sso, "Delega la autenticación", "OIDC, SAML o CAS [por confirmar]")
+Rel(app, correo, "Envía notificaciones y enlaces", "SMTP")
+@enduml
