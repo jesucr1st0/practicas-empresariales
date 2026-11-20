@@ -1,4 +1,5 @@
 from uuid import UUID
+
 from src.modulos.practicas.dominio.estado_practica import EstadoPractica
 from src.modulos.practicas.dominio.practica import Practica
 from src.modulos.practicas.dominio.puertos.practica_repository import PracticaRepository
@@ -22,6 +23,18 @@ class AdaptadorPracticaMemoria(PracticaRepository):
             ):
                 return p
         return None
+
+    def obtener_por_estudiante(self, estudiante_documento: str) -> list[Practica]:
+        return [
+            p for p in self._practicas.values()
+            if p.estudiante_documento == estudiante_documento
+        ]
+
+    def listar_por_tutor(self, tutor_documento: str) -> list[Practica]:
+        return [
+            p for p in self._practicas.values()
+            if p.tutor_documento == tutor_documento
+        ]
 
     def listar_todas(self) -> list[Practica]:
         return list(self._practicas.values())

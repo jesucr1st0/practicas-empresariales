@@ -18,7 +18,6 @@ Parte de [vision.md](vision.md). Los ADR de [adr/](adr/) citan estos IDs.
 | CU-10 | Registrar empresa | Coordinador | No | Datos maestros. | (sin especificar) |
 | CU-11 | Consultar datos tutor | Coordinador | No | Consulta simple. | (sin especificar) |
 | CU-12 | Consultar datos estudiante | Coordinador / Tutor | No | Consulta simple (datos académicos vía SIA). | (sin especificar) |
->>>>>>> 4079cdcf847bf9e14e5404e439ca80000d774749
 
 ## 2. Escenarios de atributos de calidad
 
