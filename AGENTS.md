@@ -3,7 +3,7 @@
 ## Fuentes de verdad
 
 - **docs/arquitectura.md**: mapa de visión, drivers, ADR, vistas y glosario. Es el punto de entrada para entender el sistema.
-- **specs/**: una carpeta por caso de uso de drivers.md, con el mismo número (CU-03 → specs/001-postularse/).
+- **specs/**: una carpeta por caso de uso de drivers.md, con el mismo número (CU-01 → specs/001-asignar-tutor/, CU-02 → specs/002-registrar-practica/, CU-03 → specs/003-realizar-postulacion/).
 - Si el código contradice una especificación, **gana la especificación**. Si la especificación parece incorrecta, detenerse y preguntar.
 
 ## Arquitectura

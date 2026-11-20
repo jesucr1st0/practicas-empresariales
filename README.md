@@ -24,11 +24,21 @@ practicas-empresariales/
 │       ├── contexto.puml · 01-logica.puml · 02-procesos.puml · 03-desarrollo.puml · 04-fisica.puml
 │       └── secuencias/              # cu01 … cu06 y eac01 (un archivo por escenario)
 ├── specs/
-│   └── 001-postularse/              # CU-03: Realizar postulación
+│   ├── 001-asignar-tutor/           # CU-01: Asignar tutor
+│   │   ├── spec.md                  # Especificación en Gherkin
+│   │   ├── plan.md                  # Plan de implementación
+│   │   ├── tasks.md                 # Tareas descompuestas
+│   │   └── validacion.md            # Validación
+│   ├── 002-registrar-practica/      # CU-02: Registrar práctica
+│   │   ├── spec.md                  # Especificación en Gherkin
+│   │   ├── plan.md                  # Plan de implementación
+│   │   ├── tasks.md                 # Tareas descompuestas
+│   │   └── validacion.md            # Validación
+│   └── 003-realizar-postulacion/    # CU-03: Realizar postulación
 │       ├── spec.md                  # Especificación en Gherkin
 │       ├── plan.md                  # Plan de implementación
 │       ├── tasks.md                 # Tareas descompuestas
-│       └── validacion.md            # Validación (pendiente de implementación)
+│       └── validacion.md            # Validación
 └── src/                             # Código fuente (por implementar)
 ```
 
