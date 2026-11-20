@@ -1,0 +1,17 @@
+from typing import Protocol, Sequence
+from uuid import UUID
+
+from src.modulos.tutores_asignacion.dominio.asignacion_tutor import AsignacionTutor
+from src.modulos.tutores_asignacion.dominio.tutor import Tutor
+
+
+class AsignacionRepository(Protocol):
+    def guardar(self, asignacion: AsignacionTutor) -> None: ...
+
+    def obtener_vigente_por_practica(self, practica_id: UUID) -> AsignacionTutor | None: ...
+
+    def obtener_historial_por_practica(self, practica_id: UUID) -> Sequence[AsignacionTutor]: ...
+
+    def contar_asignaciones_vigentes_por_tutor(self, tutor_documento: str) -> int: ...
+
+    def listar_tutores_activos(self, programa: str) -> Sequence[Tutor]: ...
