@@ -1,12 +1,10 @@
 # Documento de arquitectura: Sistema de Gestión de Prácticas Empresariales
 
-
 > Versión 1.0 | Estado: en construcción
 
 ## 1. Introducción y objetivos
 
 Sistema para centralizar la gestión de las prácticas empresariales de la Facultad de Ingenierías: postulación, asignación de tutores, seguimiento de horas, evaluación de la empresa y generación del acta final. El problema y la oportunidad están en [vision.md §1](vision.md#1-problema-u-oportunidad) y los objetivos de negocio (OB-01 a OB-05) en [vision.md §2](vision.md#2-objetivos-de-negocio). Los stakeholders están en [vision.md §4](vision.md#4-stakeholders).
->>>>>>> 4079cdcf847bf9e14e5404e439ca80000d774749
 
 ## 2. Restricciones
 
@@ -14,15 +12,6 @@ Las restricciones vigentes (RT-01 a RT-04 y RN-01 a RN-05) están en [drivers.md
 
 ## 3. Contexto del sistema
 
-<<<<<<< HEAD
-El sistema como caja negra, con sus cinco actores y tres sistemas externos (SIA, SSO institucional y correo institucional), está en [contexto.md](contexto.md), con su diagrama C4 nivel 1 en [diagramas/contexto.puml](diagramas/contexto.puml).
-
-## 4. Estrategia de solución
-
-*Pendiente.* Las decisiones de alto nivel se resumirán desde los ADR de la sección 7.
-
-## 5. Vistas
-=======
 El sistema como caja negra, con sus cinco actores (Estudiante, Tutor académico, Coordinador de prácticas, Administrador, Supervisor de empresa) y tres sistemas externos (SIA, SSO institucional y Servidor de correo institucional), está en [contexto.md](contexto.md), con su diagrama C4 nivel 1 en [diagramas/contexto.puml](diagramas/contexto.puml).
 
 ## 4. Estrategia de solución
@@ -41,7 +30,6 @@ Resumen de las decisiones de alto nivel extraídas de los ADR:
 | EAC-03: tolerancia a fallos del SIA, 0 postulaciones perdidas | Cola en base de datos, reintentos programados, estado «pendiente de verificación» | [ADR-007](adr/ADR-007-integracion-sia-adaptador-aislado.md), [ADR-008](adr/ADR-008-verificacion-asincrona-con-reintentos.md) |
 
 ## 5. Vistas (4+1)
->>>>>>> 4079cdcf847bf9e14e5404e439ca80000d774749
 
 Modelo 4+1: cuatro vistas documentadas en cinco partes (presentación, catálogo, justificación, comportamiento y vistas relacionadas) más los escenarios que las validan. Los diagramas están en [diagramas/](diagramas/).
 
@@ -58,9 +46,6 @@ Trazabilidad: [matriz-cobertura.md](matriz-cobertura.md). Tabla de escenarios: [
 
 ## 6. Conceptos transversales
 
-<<<<<<< HEAD
-*Pendiente.*
-=======
 Preocupaciones arquitectónicas que cruzan varios módulos y cómo se resuelven:
 
 | Concepto | Cómo se resuelve | Dónde se ve |
@@ -75,7 +60,6 @@ Preocupaciones arquitectónicas que cruzan varios módulos y cómo se resuelven:
 | Notificaciones | Correo institucional (SMTP); registro de cada envío, incluidos los fallidos | [ADR-013](adr/ADR-013-notificaciones-por-correo-institucional.md), Módulo Notificaciones |
 | Trazabilidad y bitácora | Registro de accesos de solo inserción (quién, qué, cuándo, desde dónde) | [ADR-005](adr/ADR-005-autorizacion-por-roles-y-bitacora.md), RegistroAcceso |
 | Retención documental | Actas y evidencias sin borrado físico antes del plazo; retención parametrizable | [ADR-011](adr/ADR-011-retencion-documental-y-datos-personales.md), Almacenamiento de archivos |
->>>>>>> 4079cdcf847bf9e14e5404e439ca80000d774749
 
 ## 7. Decisiones de diseño
 
@@ -107,15 +91,9 @@ Preocupaciones arquitectónicas que cruzan varios módulos y cómo se resuelven:
 | CU-04 | 006, 013, 005 |
 | CU-05 | 006, 013, 005 |
 | CU-06 | 009, 010, 011 |
-<<<<<<< HEAD
-| [EAC-01](drivers.md#eac-01-mantenibilidad-modificabilidad) | 001, 009 |
-| [EAC-02](drivers.md#eac-02-seguridad-acceso-externo-sin-cuenta) | 006, 005, 013 |
-| [EAC-03](drivers.md#eac-03-fiabilidad-tolerancia-a-fallos-del-sia) | 007, 008, 013 |
-=======
 | EAC-01 | 001, 009 |
 | EAC-02 | 006, 005, 013 |
 | EAC-03 | 007, 008, 013 |
->>>>>>> 4079cdcf847bf9e14e5404e439ca80000d774749
 | RT-01 | 003, 001 |
 | RT-02 | 004 |
 | RT-03 | 007, 002 |
@@ -140,15 +118,6 @@ Preocupaciones arquitectónicas que cruzan varios módulos y cómo se resuelven:
 
 Los escenarios de atributos de calidad están en [drivers.md §2](drivers.md#2-escenarios-de-atributos-de-calidad):
 
-<<<<<<< HEAD
-- [EAC-01: Mantenibilidad (modificabilidad)](drivers.md#eac-01-mantenibilidad-modificabilidad)
-- [EAC-02: Seguridad (acceso externo sin cuenta)](drivers.md#eac-02-seguridad-acceso-externo-sin-cuenta)
-- [EAC-03: Fiabilidad (tolerancia a fallos del SIA)](drivers.md#eac-03-fiabilidad-tolerancia-a-fallos-del-sia)
-
-## 9. Riesgos y deuda técnica
-
-*Pendiente.*
-=======
 | EAC | Atributo | Prioridad | ADR | Se verifica en |
 |-----|----------|-----------|-----|----------------|
 | [EAC-01](drivers.md#eac-01-mantenibilidad-modificabilidad) | Mantenibilidad (modificabilidad) | Alta | ADR-001, ADR-009 | [specs/002-registrar-practica/](../specs/002-registrar-practica/), ESC-02, ESC-06, ESC-07 |
@@ -200,4 +169,3 @@ Los términos del dominio, con su definición y su nombre en el código. Los nom
 | Almacén de archivos | Puerto para guardar y recuperar archivos (actas, evidencias) | `AlmacenArchivos` |
 | Proveedor de identidad | Puerto para autenticar usuarios internos vía SSO | `ProveedorIdentidad` |
 | Envío de correo | Puerto para enviar notificaciones por correo institucional | `EnvioCorreo` |
->>>>>>> 4079cdcf847bf9e14e5404e439ca80000d774749
