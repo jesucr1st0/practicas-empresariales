@@ -6,9 +6,9 @@ Parte de [vision.md](vision.md). Los ADR de [adr/](adr/) citan estos IDs.
 
 | ID | Caso de uso | Actor | ¿Primario? | Justificación | Se especifica en |
 |----|-------------|-------|------------|---------------|------------------|
-| **CU-01** | Asignar tutor | Coordinador | Sí | Sustenta OB-03; condiciona el alcance de lo que ve cada tutor. | (sin especificar) |
-| **CU-02** | Registrar práctica | Coordinador / Estudiante | Sí | Núcleo del sistema; fija las reglas del programa que aplican a la práctica (EAC-01). | (sin especificar) |
-| **CU-03** | Realizar postulación | Estudiante | Sí | Depende del SIA para verificar datos académicos (RT-03, EAC-03). | [specs/001-postularse/](../specs/001-postularse/) |
+| **CU-01** | Asignar tutor | Coordinador | Sí | Sustenta OB-03; condiciona el alcance de lo que ve cada tutor. | [specs/001-asignar-tutor/](../specs/001-asignar-tutor/) |
+| **CU-02** | Registrar práctica | Coordinador / Estudiante | Sí | Núcleo del sistema; fija las reglas del programa que aplican a la práctica (EAC-01). | [specs/002-registrar-practica/](../specs/002-registrar-practica/) |
+| **CU-03** | Realizar postulación | Estudiante | Sí | Depende del SIA para verificar datos académicos (RT-03, EAC-03). | [specs/003-postularse/](../specs/003-postularse/) |
 | **CU-04** | Realizar seguimiento en horas | Estudiante / Tutor / Supervisor | Sí | Sustenta OB-04; el supervisor valida sin cuenta (EAC-02). | (sin especificar) |
 | **CU-05** | Evaluar empresa (evaluación del estudiante por la empresa) | Supervisor de empresa | Sí | Sustenta OB-05; acceso externo por enlace (RN-04). | (sin especificar) |
 | **CU-06** | Generar acta final | Coordinador | Sí | Documento oficial con trazabilidad y retención (RN-02, RN-03). | (sin especificar) |
