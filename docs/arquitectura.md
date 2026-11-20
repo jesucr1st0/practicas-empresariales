@@ -122,7 +122,7 @@ Los escenarios de atributos de calidad están en [drivers.md §2](drivers.md#2-e
 |-----|----------|-----------|-----|----------------|
 | [EAC-01](drivers.md#eac-01-mantenibilidad-modificabilidad) | Mantenibilidad (modificabilidad) | Alta | ADR-001, ADR-009 | [specs/002-registrar-practica/](../specs/002-registrar-practica/), ESC-02, ESC-06, ESC-07 |
 | [EAC-02](drivers.md#eac-02-seguridad-acceso-externo-sin-cuenta) | Seguridad (acceso externo sin cuenta) | Alta | ADR-006, ADR-005 | ESC-04, ESC-05 |
-| [EAC-03](drivers.md#eac-03-fiabilidad-tolerancia-a-fallos-del-sia) | Fiabilidad (tolerancia a fallos del SIA) | Alta | ADR-007, ADR-008 | [specs/003-postularse/](../specs/003-postularse/), ESC-03 |
+| [EAC-03](drivers.md#eac-03-fiabilidad-tolerancia-a-fallos-del-sia) | Fiabilidad (tolerancia a fallos del SIA) | Alta | ADR-007, ADR-008 | [specs/003-realizar-postulacion/](../specs/003-realizar-postulacion/), ESC-03 |
 
 ## 9. Riesgos y deuda técnica
 

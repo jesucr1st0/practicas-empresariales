@@ -34,7 +34,7 @@ practicas-empresariales/
 │   │   ├── plan.md                  # Plan de implementación
 │   │   ├── tasks.md                 # Tareas descompuestas
 │   │   └── validacion.md            # Validación
-│   └── 003-postularse/              # CU-03: Realizar postulación
+│   └── 003-realizar-postulacion/    # CU-03: Realizar postulación
 │       ├── spec.md                  # Especificación en Gherkin
 │       ├── plan.md                  # Plan de implementación
 │       ├── tasks.md                 # Tareas descompuestas

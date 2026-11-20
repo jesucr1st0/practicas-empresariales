@@ -1,4 +1,4 @@
-# Plan: 003-postularse (CU-03 Realizar postulación)
+# Plan: 003-realizar-postulacion (CU-03 Realizar postulación)
 
 ## 1. Decisiones que aplican
 
