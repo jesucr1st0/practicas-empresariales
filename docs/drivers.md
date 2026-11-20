@@ -4,20 +4,21 @@ Parte de [vision.md](vision.md). Los ADR de [adr/](adr/) citan estos IDs.
 
 ## 1. Casos de uso y casos de uso primarios
 
-| ID | Caso de uso | Actor | ¿Primario? | Justificación |
-|----|-------------|-------|------------|---------------|
-| **CU-01** | Asignar tutor | Coordinador | Sí | Sustenta OB-03; condiciona el alcance de lo que ve cada tutor. |
-| **CU-02** | Registrar práctica | Coordinador / Estudiante | Sí | Núcleo del sistema; fija las reglas del programa que aplican a la práctica (EAC-01). |
-| **CU-03** | Realizar postulación | Estudiante | Sí | Depende del SIA para verificar datos académicos (RT-03, EAC-03). |
-| **CU-04** | Realizar seguimiento en horas | Estudiante / Tutor / Supervisor | Sí | Sustenta OB-04; el supervisor valida sin cuenta (EAC-02). |
-| **CU-05** | Evaluar empresa (evaluación del estudiante por la empresa) | Supervisor de empresa | Sí | Sustenta OB-05; acceso externo por enlace (RN-04). |
-| **CU-06** | Generar acta final | Coordinador | Sí | Documento oficial con trazabilidad y retención (RN-02, RN-03). |
-| CU-07 | Exportar acta final | Coordinador / Estudiante | No | Descarga del documento ya generado en CU-06. |
-| CU-08 | Registrar estudiante | Administrador | No | Datos maestros; sin impacto arquitectónico propio. |
-| CU-09 | Registrar tutor | Administrador | No | Datos maestros. |
-| CU-10 | Registrar empresa | Coordinador | No | Datos maestros. |
-| CU-11 | Consultar datos tutor | Coordinador | No | Consulta simple. |
-| CU-12 | Consultar datos estudiante | Coordinador / Tutor | No | Consulta simple (datos académicos vía SIA). |
+| ID | Caso de uso | Actor | ¿Primario? | Justificación | Se especifica en |
+|----|-------------|-------|------------|---------------|------------------|
+| **CU-01** | Asignar tutor | Coordinador | Sí | Sustenta OB-03; condiciona el alcance de lo que ve cada tutor. | [specs/001-asignar-tutor/](../specs/001-asignar-tutor/) |
+| **CU-02** | Registrar práctica | Coordinador / Estudiante | Sí | Núcleo del sistema; fija las reglas del programa que aplican a la práctica (EAC-01). | [specs/002-registrar-practica/](../specs/002-registrar-practica/) |
+| **CU-03** | Realizar postulación | Estudiante | Sí | Depende del SIA para verificar datos académicos (RT-03, EAC-03). | [specs/003-realizar-postulacion/](../specs/003-realizar-postulacion/) |
+| **CU-04** | Realizar seguimiento en horas | Estudiante / Tutor / Supervisor | Sí | Sustenta OB-04; el supervisor valida sin cuenta (EAC-02). | (sin especificar) |
+| **CU-05** | Evaluar empresa (evaluación del estudiante por la empresa) | Supervisor de empresa | Sí | Sustenta OB-05; acceso externo por enlace (RN-04). | (sin especificar) |
+| **CU-06** | Generar acta final | Coordinador | Sí | Documento oficial con trazabilidad y retención (RN-02, RN-03). | (sin especificar) |
+| CU-07 | Exportar acta final | Coordinador / Estudiante | No | Descarga del documento ya generado en CU-06. | (sin especificar) |
+| CU-08 | Registrar estudiante | Administrador | No | Datos maestros; sin impacto arquitectónico propio. | (sin especificar) |
+| CU-09 | Registrar tutor | Administrador | No | Datos maestros. | (sin especificar) |
+| CU-10 | Registrar empresa | Coordinador | No | Datos maestros. | (sin especificar) |
+| CU-11 | Consultar datos tutor | Coordinador | No | Consulta simple. | (sin especificar) |
+| CU-12 | Consultar datos estudiante | Coordinador / Tutor | No | Consulta simple (datos académicos vía SIA). | (sin especificar) |
+>>>>>>> 4079cdcf847bf9e14e5404e439ca80000d774749
 
 ## 2. Escenarios de atributos de calidad
 

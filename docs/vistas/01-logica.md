@@ -22,7 +22,7 @@ Cómo se lee: cada línea es una relación del negocio con su multiplicidad. Las
 | Supervisor | Persona de la empresa que valida y evalúa | nombre, correo | No tiene cuenta ni contraseña; actúa solo con un enlace (RN-04) |
 | Postulacion | Solicitud del estudiante para hacer práctica | fecha, estado | Nunca se pierde ni se descarta; tras 24 h sin verificar pasa a revisión manual (ADR-008) |
 | Practica | La práctica empresarial en sí | periodo, fecha de inicio, fecha de fin, estado | Se rige por la versión de regla vigente al registrarse y esa referencia no cambia (EAC-01) |
-| AsignacionTutor | Vínculo de un tutor con una práctica | fecha, vigente, origen (sugerida o manual) | El sistema sugier"e y el coordinador confirma; todo queda en el historial (ADR-012) |
+| AsignacionTutor | Vínculo de un tutor con una práctica | fecha, vigente, origen (sugerida o manual) | El sistema sugiere y el coordinador confirma; todo queda en el historial (ADR-012) |
 | RegistroHoras | Horas realizadas y su validación | fecha, cantidad, evidencia, estado de validación | Las valida el supervisor; el tutor da seguimiento (OB-04) |
 | Evaluacion | Evaluación del estudiante hecha por la empresa | fecha, resultado, observaciones | Una por práctica; no se modifica una vez enviada |
 | ActaFinal | Documento oficial de cierre | fecha de emisión, huella de integridad, estado | Plantilla oficial (RN-03); inmutable; una corrección genera un acta nueva y anula la anterior (ADR-010) |
